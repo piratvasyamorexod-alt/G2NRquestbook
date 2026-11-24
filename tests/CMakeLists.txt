@@ -10,3 +10,7 @@ add_executable(mouse-input mouse_input.cpp ../src/quest_cursor.rc)
 target_include_directories(mouse-input PRIVATE ../src)
 target_compile_features(mouse-input PRIVATE cxx_std_17)
 add_test(NAME mouse-input COMMAND mouse-input)
+
+add_executable(log-recency log_recency.cpp)
+target_compile_features(log-recency PRIVATE cxx_std_17)
+add_test(NAME log-recency COMMAND log-recency)

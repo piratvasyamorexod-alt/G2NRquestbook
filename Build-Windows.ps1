@@ -25,13 +25,16 @@ Check "Failed to select pinned Union template"
 git -C $template submodule update --init --recursive
 Check "Failed to fetch Union dependencies"
 
-foreach ($source in @("Plugin.ipp", "log_list.hpp", "mouse_win32.hpp", "quest_cursor.rc", "quest_cursor.cur")) {
+foreach ($source in @("Plugin.ipp", "log_recency.hpp", "log_list.hpp", "mouse_win32.hpp", "quest_cursor.rc", "quest_cursor.cur")) {
     Copy-Item (Join-Path $root "src/$source") (Join-Path $template "src/$source") -Force
 }
+$textureDir = Join-Path $template "vdf/_Work/Data/Textures/_Compiled"
+New-Item -ItemType Directory -Force -Path $textureDir | Out-Null
+Copy-Item (Join-Path $root "textures/*-C.TEX") $textureDir -Force
 $cmake = Join-Path $template "CMakeLists.txt"
 $body = [IO.File]::ReadAllText($cmake)
 $body = $body.Replace("project(UnionPlugin", "project(G2NRquestbook")
-$body = $body.Replace('VERSION ${PROJECT_VERSION}', 'VERSION 1.0.0.0')
+$body = $body.Replace('VERSION ${PROJECT_VERSION}', 'VERSION 1.1.0.0')
 if ($body -notmatch "project\(G2NRquestbook") { throw "Upstream CMake file changed" }
 $body += "`r`ntarget_sources(G2NRquestbook PRIVATE src/quest_cursor.rc)`r`n"
 [IO.File]::WriteAllText($cmake, $body)
