@@ -34,7 +34,7 @@ Copy-Item (Join-Path $root "textures/*-C.TEX") $textureDir -Force
 $cmake = Join-Path $template "CMakeLists.txt"
 $body = [IO.File]::ReadAllText($cmake)
 $body = $body.Replace("project(UnionPlugin", "project(G2NRquestbook")
-$body = $body.Replace('VERSION ${PROJECT_VERSION}', 'VERSION 1.1.0.0')
+$body = $body.Replace('VERSION ${PROJECT_VERSION}', 'VERSION 1.1.1.0')
 if ($body -notmatch "project\(G2NRquestbook") { throw "Upstream CMake file changed" }
 $body += "`r`ntarget_sources(G2NRquestbook PRIVATE src/quest_cursor.rc)`r`n"
 [IO.File]::WriteAllText($cmake, $body)

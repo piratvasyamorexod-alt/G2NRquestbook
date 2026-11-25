@@ -219,13 +219,11 @@ class JournalPanel : public zCView {
         entryLines.clear();
         const auto& items = topics[tab];
         if (items.empty()) return;
-        std::vector<const oCLogEntry*> entries;
         const auto& log = items[selected].id->m_lstEntries;
         for (auto* node = log.GetNextInList(); node; node = node->GetNextInList()) {
-            if (const auto* entry = node->GetData()) entries.push_back(entry);
-        }
-        for (auto it = entries.rbegin(); it != entries.rend(); ++it) {
-            auto wrapped = Wrap((*it)->m_strDescription.ToChar(), (std::max)(1, reading.width - 12));
+            const auto* entry = node->GetData();
+            if (!entry) continue;
+            auto wrapped = Wrap(entry->m_strDescription.ToChar(), (std::max)(1, reading.width - 12));
             if (wrapped.empty()) continue;
             if (!entryLines.empty()) entryLines.emplace_back();
             entryLines.insert(entryLines.end(), std::make_move_iterator(wrapped.begin()),
@@ -388,18 +386,6 @@ public:
         SetFont(screen->GetFont());
         cyrillic = HasCyrillicCaption(menu);
         topics = ReadTopics();
-        std::uint64_t newest = 0;
-        const auto selectNewest = [&](int end) {
-            for (int i = 0; i < end; ++i) {
-                for (const auto& topic : topics[i]) {
-                    if (!topic.activity.unread || topic.activity.order <= newest) continue;
-                    newest = topic.activity.order;
-                    tab = i;
-                }
-            }
-        };
-        selectNewest(Notes);
-        if (!newest) selectNewest(CategoryCount);
         if (ogame && ogame->GetWorldTimer()) {
             int day = 0, hour = 0, minute = 0;
             ogame->GetTime(day, hour, minute);
